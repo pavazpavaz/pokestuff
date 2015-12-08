@@ -41,7 +41,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Es0-zy-YdW" customClass="PokeCell" customModule="pokedex_by_devslopes" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PokeCell" id="Es0-zy-YdW" customClass="PokeCell" customModule="pokedex_by_devslopes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="110" height="110"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -110,6 +110,9 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="05C-r1-zKB" secondAttribute="bottom" constant="20" id="tU8-iS-9ts"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="collection" destination="05C-r1-zKB" id="xn9-4c-JDy"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
