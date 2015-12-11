@@ -9,16 +9,26 @@
 import UIKit
 import AVFoundation
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
 
     // connect the collectionview
     @IBOutlet weak var collection: UICollectionView!
     
+    // connect the searchbar
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     // storage for Pokemon objects
     var pokemon = [Pokemon]()
     
+    // secondary storage array for the filtered search results
+    var filteredPokemon = [Pokemon]()
+    
     // audio player (don't forget to import AVFoundation)
     var musicPlayer: AVAudioPlayer!
+    
+    // boolean to detect and switch between full poke array and filtered secondary one
+    var inSearchMode = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +36,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         // this vc will be the delegate and dataSource for the instantiated collectionview
         collection.delegate = self
         collection.dataSource = self
+        
+        // this vc will be the delegate for the searchbar
+        searchBar.delegate = self
+        
+        // use Done keyword on the kb instead of Search
+        searchBar.returnKeyType = UIReturnKeyType.Done
         
         initAudio()
         parsePokemonCSV()
@@ -87,7 +103,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PokeCell", forIndexPath: indexPath) as? PokeCell {
             
             // grab the pokemon
-            var poke = pokemon[indexPath.row]
+            let poke: Pokemon!
+            
+            // if in searchmode use filtered array, if not use complete array
+            if inSearchMode {
+                
+                poke = filteredPokemon[indexPath.row]
+            } else {
+                
+                poke = pokemon[indexPath.row]
+            }
             // populate its cell
             cell.configureCell(poke)
             return cell
@@ -101,13 +126,34 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        // whenever an icon is tapped, grab that item from the right array and pass it do the detailVC
+        let poke: Pokemon!
         
+        if inSearchMode {
+            
+            poke = filteredPokemon[indexPath.row]
+        } else {
+            
+            poke = pokemon[indexPath.row]
+        }
+        
+        // debug printing
+        print(poke.name)
+        
+        // segue to DetailVC with the item that was clicked
+        performSegueWithIdentifier("PokemonDetailVC", sender: poke)
     }
     
     // number of items
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return 718
+        // if in searchmode use filtered array, if not use complete array
+        if inSearchMode {
+            
+            return filteredPokemon.count
+        }
+            
+        return pokemon.count
     }
     
     //
@@ -135,5 +181,53 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
+    // funcs for the searchbar
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        
+        // when press hide the kb
+        view.endEditing(true)
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        // if there's no text in the search bar
+        if searchBar.text == nil || searchBar.text == "" {
+            
+            // use full poke list array
+            inSearchMode = false
+            // if it is empty end the editing --- take away the kb
+            view.endEditing(true)
+            collection.reloadData()
+        } else {
+            
+            // change to filtered array
+            inSearchMode = true
+            // grab the word that's in the textbar
+            let lower = searchBar.text!.lowercaseString
+            // closure expression. $0 is used as a var to grab an element out of the array
+            // see if there's a string on it and finds and return if the name contains our string in every single one of the pokemons. If it exists (not nil) add it to our filtered array
+            filteredPokemon = pokemon.filter({$0.name.rangeOfString(lower) != nil})
+            // refresh our collectionview with the new filteredPokemon array
+            collection.reloadData()
+        }
+    }
+    
+    // prepare the clicked item info to be picked up by the detailVC
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "PokemonDetailVC" {
+            
+            // grab the destinationVC (detailVC)
+            if let detailsVC = segue.destinationViewController as? PokemonDetailVC {
+                
+                // grab the pokemon item (sent by performsegue above) and cast it as a Pokemon object
+                if let poke = sender as? Pokemon {
+                    
+                    // assign it as the pokemon on the detailsVC
+                    detailsVC.pokemon = poke
+                }
+            }
+        }
+    }
 }
 
