@@ -378,7 +378,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="5MI-yZ-AHC">
                                 <rect key="frame" x="20" y="492" width="560" height="100"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="507" translatesAutoresizingMaskIntoConstraints="NO" id="ZhJ-yr-Der">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="507" translatesAutoresizingMaskIntoConstraints="NO" id="ZhJ-yr-Der" userLabel="Current Evo Img">
                                         <rect key="frame" x="0.0" y="0.0" width="280" height="100"/>
                                         <animations/>
                                         <constraints>
@@ -386,7 +386,7 @@
                                             <constraint firstAttribute="width" constant="100" id="fzj-bH-Wss"/>
                                         </constraints>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="627" translatesAutoresizingMaskIntoConstraints="NO" id="lsS-5P-K1r">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="627" translatesAutoresizingMaskIntoConstraints="NO" id="lsS-5P-K1r" userLabel="Next Evo Img">
                                         <rect key="frame" x="280" y="0.0" width="280" height="100"/>
                                         <animations/>
                                         <constraints>
@@ -418,14 +418,14 @@
                     </view>
                     <connections>
                         <outlet property="baseAttkLbl" destination="rZD-fw-jIm" id="bIi-54-cw5"/>
-                        <outlet property="currentEvoLbl" destination="ZhJ-yr-Der" id="JUN-My-uDc"/>
+                        <outlet property="currentEvoImg" destination="ZhJ-yr-Der" id="Al9-qp-48a"/>
                         <outlet property="defenseLbl" destination="mKt-US-hgb" id="LZt-Eb-J2d"/>
                         <outlet property="descriptionLbl" destination="ZgU-SC-2tu" id="qLb-Js-ix1"/>
                         <outlet property="evoLbl" destination="C96-fd-KAD" id="33A-KS-caw"/>
                         <outlet property="heightLbl" destination="CrQ-ch-Vnh" id="ms6-gk-QQ8"/>
                         <outlet property="mainImg" destination="GbD-YQ-mQy" id="e4l-wr-afk"/>
                         <outlet property="nameLbl" destination="umN-5I-efd" id="u3Z-Ch-tvm"/>
-                        <outlet property="nextEvoLbl" destination="lsS-5P-K1r" id="Imb-Kd-sIH"/>
+                        <outlet property="nextEvoImg" destination="lsS-5P-K1r" id="pfd-n7-06F"/>
                         <outlet property="pokedexLbl" destination="maP-db-oRX" id="lX6-pY-rvL"/>
                         <outlet property="typeLbl" destination="3QF-9J-hip" id="bIj-V6-cUc"/>
                         <outlet property="weightLbl" destination="VdR-DY-LQO" id="Csz-5l-iGT"/>

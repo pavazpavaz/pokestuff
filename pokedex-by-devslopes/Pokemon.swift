@@ -11,6 +11,8 @@ import Alamofire
 
 class Pokemon {
     
+    // data encapsulation
+    
     private var _name: String!
     private var _pokedexId: Int!
     private var _description: String!
@@ -20,17 +22,102 @@ class Pokemon {
     private var _weight: String!
     private var _attack: String!
     private var _nextEvolutionTxt: String!
+    private var _nextEvolutionId: String!
+    private var _nextEvolutionLvl: String!
     private var _pokemonUrl: String!
     
+    // getters
+    
+    // name can't be nil because it is initialized
     var name: String {
         
         return _name
     }
     
+    // pokedexId can't be nil because it is initialized
     var pokedexId: Int {
         
         return _pokedexId
     }
+    
+    var description: String {
+        
+        if _description == nil {
+            _description = ""
+        }
+        return _description
+    }
+    
+    var type: String {
+        
+        if _type == nil {
+            _type = ""
+        }
+        return _type
+    }
+    
+    var defense: String {
+        
+        if _defense == nil {
+            _defense = ""
+        }
+        return _defense
+    }
+    
+    var height: String {
+        
+        if _height == nil {
+            _height = ""
+        }
+        return _height
+    }
+    
+    var weight: String {
+        
+        if _weight == nil {
+            _weight = ""
+        }
+        return _weight
+    }
+    
+    var attack: String {
+        
+        if _attack == nil {
+            _attack = ""
+        }
+        return _attack
+    }
+    
+    var nextEvolutionTxt: String {
+        
+        if _nextEvolutionTxt == nil {
+            _nextEvolutionTxt = ""
+        }
+        return _nextEvolutionTxt
+    }
+    
+    var nextEvolutionId: String {
+        
+        if _nextEvolutionId == nil {
+            _nextEvolutionId = ""
+        }
+        return _nextEvolutionId
+    }
+    
+    var nextEvolutionLvl: String {
+        
+        // the get is not needed
+        
+        get {
+            if _nextEvolutionLvl == nil {
+                _nextEvolutionLvl = ""
+            }
+            return _nextEvolutionLvl
+        }
+    }
+    
+    
+    // initialization:
     
     init (name: String, pokedexId: Int) {
         
@@ -115,9 +202,89 @@ class Pokemon {
                 }
                 
                 print(self._type)
+                
+                // types is of type array of dictionaries (key: string, value: string)
+                // accounting for the possibility that the pokemon object has no description whatsoever ("where" condition)
+                if let descArr = dict["descriptions"] as? [Dictionary<String,String>] where descArr.count > 0 {
+                    
+                    // grab the url description and make another request and store the description
+                    if let url = descArr[0]["resource_uri"] {
+                        
+                        // making another request using the url_base constant + the resource_uri
+                        let nsurl = NSURL(string: "\(URL_BASE)\(url)")!
+                        Alamofire.request(.GET, nsurl).responseJSON{ response in // closure that is called after the request is successful:
+                            
+                            let desResult = response.result
+                            if let descDict = desResult.value as? Dictionary<String, AnyObject> {
+                                
+                                // do not confound key description that is a string with the array of dictionaries called descriptions
+                                if let description = descDict["description"] as? String {
+                                    
+                                    // assign the fetched value to the Pokemon object property
+                                    self._description = description
+                                    print(self._description)
+                                }
+                            }
+                            
+                            // call the func when the request is completed
+                            completed()
+                        }
+                    }
+                } else {
+                    
+                    // if there's no description
+                    self._description = ""
+                }
+                
+                // Evolutions. Show the images and the names
+                if let evolutions = dict["evolutions"] as? [Dictionary<String,AnyObject>] where evolutions.count > 0 {
+                    
+                    // the API only gives you 1 evo
+                    if let to = evolutions[0]["to"] as? String {
+                        
+                        // do not include the MEGA evo's. not supported but API still gives us
+                        if to.rangeOfString("mega") == nil {
+                            
+                            // extract the poke id from the uri
+                            if let uri = evolutions[0]["resource_uri"] as? String {
+                                
+                                // take out everything from the resource_uri except the id no. that we'll use to fetch the respective name and picture:
+                                let newStr = uri.stringByReplacingOccurrencesOfString("/api/v1/pokemon/", withString: "")
+                                
+                                // remove the last trailing slash, so in the end all we have is the id no.
+                                let num = newStr.stringByReplacingOccurrencesOfString("/", withString: "")
+                                
+                                // assign the id no. and get the name
+                                self._nextEvolutionId = num
+                                self._nextEvolutionTxt = to
+                                
+                                // grab the level it will evo and assign it
+                                if let lvl = evolutions[0]["level"] as? Int {
+                                    
+                                    self._nextEvolutionLvl = "\(lvl)"
+                                }
+                                
+                                // TESTING
+                                print(self._nextEvolutionId)
+                                print(self._nextEvolutionTxt)
+                                print(self._nextEvolutionLvl)
+                                
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
 
 
